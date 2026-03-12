@@ -60,6 +60,8 @@ export const Elogin = () => {
 // ✅ Save tokens
 localStorage.setItem("access", res.data.access);
 localStorage.setItem("refresh", res.data.refresh);
+localStorage.setItem("user_type", res.data.user.user_type);
+console.log("usertype:",res.data.user.user_type);
 
 // ✅ Redirect after login
 navigate("/Job-portal/employer/dashboard");

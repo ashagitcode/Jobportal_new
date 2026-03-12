@@ -44,55 +44,74 @@ export const FindTalent = () => {
 
   // --- Dynamic Data Extraction ---
   const filterOptions = useMemo(() => {
-    // const workTypes = new Set();
-    const languages = new Set();
-    const education = new Set();
-    const skills = new Set();
+  const languages = new Set();
+  const education = new Set();
+  const skills = new Set();
 
-    Alluser.forEach(user => {
-      if (user.preferences[0]?.jobType)
-        //workTypes.add(user.preferences[0].jobType);
-        user.languages?.forEach(lang => languages.add(lang.name));
-      if (user.education?.highestQual) education.add(user.education.highestQual);
-      user.skills?.forEach(skill => skills.add(skill));
-    });
+  Alluser.forEach(user => {
+    if (user.preferences?.[0]?.jobType) {
+      // workTypes.add(user.preferences[0].jobType);
+    }
 
-    return {
-      // workTypes: Array.from(workTypes),
-      languages: Array.from(languages),
-      education: Array.from(education),
-      skills: Array.from(skills),
-    };
-  }, [Alluser]);
+    user.languages?.forEach(lang => languages.add(lang.name));
+    if (user.education?.highestQual) education.add(user.education.highestQual);
+    user.skills?.forEach(skill => skills.add(skill));
+  });
+
+  return {
+    // workTypes: Array.from(workTypes),
+    languages: Array.from(languages),
+    education: Array.from(education),
+    skills: Array.from(skills),
+  };
+}, [Alluser]);
 
   const handleFilterChange = (value, state, setState) => {
     setState(state.includes(value) ? state.filter(i => i !== value) : [...state, value]);
   };
 
   const filteredTalent = useMemo(() => {
-    return Alluser.filter((user) => {
-      const matchesSearch = searchTerm === '' ||
-        user.skills.some(s => s.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        user.education.highestQual.toLowerCase().includes(searchTerm.toLowerCase());
+  return Alluser.filter((user) => {
 
-      // const matchesWorkType = selectedWorkTypes.length === 0 || 
-      //   selectedWorkTypes.includes(user.preferences[0].jobType);
+    const matchesSearch =
+      searchTerm === '' ||
+      user.skills?.some(s =>
+        s.toLowerCase().includes(searchTerm.toLowerCase())
+      ) ||
+      user.education?.highestQual?.toLowerCase()
+        ?.includes(searchTerm.toLowerCase());
 
-      const matchesLanguage = selectedLanguages.length === 0 ||
-        user.languages.some(lang => selectedLanguages.includes(lang.name));
+    const matchesLanguage =
+      selectedLanguages.length === 0 ||
+      user.languages?.some(lang =>
+        selectedLanguages.includes(lang.name)
+      );
 
-      const matchesEducation = selectedEdu.length === 0 ||
-        selectedEdu.includes(user.education.highestQual);
+    const matchesEducation =
+      selectedEdu.length === 0 ||
+      selectedEdu.includes(user.education?.highestQual);
 
-      const matchesSkills = selectedSkills.length === 0 ||
-        selectedSkills.every(skill => user.skills.includes(skill));
+    const matchesSkills =
+      selectedSkills.length === 0 ||
+      selectedSkills.every(skill =>
+        user.skills?.includes(skill)
+      );
 
-      const expNumber = user.currentDetails.experience === "Fresher" ? 0 : parseFloat(user.currentDetails.experience);
-      const matchesExperience = expNumber <= maxExp;
+    const expNumber =
+  user.experience_years === null || user.experience_years === "Fresher"
+    ? 0
+    : parseFloat(user.experience_years);
 
-      return matchesSearch && matchesLanguage && matchesEducation && matchesSkills && matchesExperience; //matchesWorkType &&
-    });
-  }, [Alluser,searchTerm, selectedLanguages, selectedEdu, selectedSkills, maxExp]);
+const matchesExperience = expNumber <= maxExp;
+    return (
+      matchesSearch &&
+      matchesLanguage &&
+      matchesEducation &&
+      matchesSkills &&
+      matchesExperience
+    );
+  });
+}, [Alluser, searchTerm, selectedLanguages, selectedEdu, selectedSkills, maxExp]);
   //selectedWorkTypes
 
   // Helper function to slice data based on toggle

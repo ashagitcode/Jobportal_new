@@ -116,6 +116,18 @@ class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
             pass
  
         return profile
+    
+
+
+from rest_framework import generics
+from .models import JobSeekerProfile
+from .serializers import JobSeekerProfileReadSerializer
+from .permissions import IsAdminOrEmployer
+
+class JobSeekerListView(generics.ListAPIView):
+    queryset = JobSeekerProfile.objects.all()
+    serializer_class = JobSeekerProfileReadSerializer
+    permission_classes = [IsAdminOrEmployer]
 
  
 class EmployerProfileView(generics.RetrieveUpdateAPIView):
@@ -135,17 +147,7 @@ class EmployerProfileView(generics.RetrieveUpdateAPIView):
 
 
 
-from rest_framework import generics
-from rest_framework.permissions import IsAdminUser
-from jobapp.models import JobSeekerProfile
-from jobapp.serializers import JobSeekerProfileReadSerializer
- 
- 
-class JobSeekerListView(generics.ListAPIView):
-    queryset = JobSeekerProfile.objects.all()
-    serializer_class = JobSeekerProfileReadSerializer
-    permission_classes = [IsAdminUser]
-   
+
  
    
 from rest_framework import generics, status

@@ -27,62 +27,62 @@ export const JobProvider = ({ children }) => {
 
 
 
+
     // 🔹 Load everything from backend
     useEffect(() => {
+
+        const userType = localStorage.getItem("user_type");
+        
+
         const fetchAll = async () => {
             const token = localStorage.getItem("access");
+            //  const userType = localStorage.getItem("user_type");
+            //  console.log("User type from localStorage:", userType)  
+
             if (!token) {
                 setLoading(false);
                 return; // 🚫 Don't call backend without token
             }
+
+            console.log("Token:", token)
             try {
                 const jobsRes = await api.get("/jobs/");
                 const savedRes = await api.get("/jobs/saved/");
                 const appliedRes = await api.get("/jobs/applied/");
 
-                const userType = localStorage.getItem("user_type");
-            
-            if (userType === 'jobseeker') {
-                // Fetch the logged-in jobseeker profile
-                const currentUserRes = await api.get("/profile/jobseeker/");
-                setCurrentUser(currentUserRes.data);
-                setAlluser([]); // Jobseekers don't need to see other users
-
-            } else if (userType === 'employer') {
-                // CORRECTED: Fetch ALL jobseekers using the jobseekers endpoint
-                const allJobseekersRes = await api.get("/jobseekers/");
-                console.log("All jobseekers response:", allJobseekersRes.data);
-                
-                // Handle the response properly
-                if (Array.isArray(allJobseekersRes.data)) {
-                    setAlluser(allJobseekersRes.data);
-                } else if (allJobseekersRes.data && allJobseekersRes.data.results) {
-                    // If paginated
-                    setAlluser(allJobseekersRes.data.results);
-                } else {
-                    setAlluser([]);
-                }
-                
-                // Fetch employer profile
-                const employerRes = await api.get("/profile/employer/");
-                setCurrentUser(employerRes.data);
-            }
-
-
-
-
-
                 setJobs(jobsRes.data);
                 setSavedJobs(savedRes.data);     // backend saved objects
                 setAppliedJobs(appliedRes.data);
 
-                // // ADD THIS - Set current user
-                // if (userRes) {
-                //     setCurrentUser(userRes.data);
-                // }
+                //     const userType = localStorage.getItem("user_type");
+                // console.log("User type from localStorage:", userType)   
 
+                if (userType === 'jobseeker') {
+                    // Fetch the logged-in jobseeker profile
+                    const currentUserRes = await api.get("/profile/jobseeker/");
+                    setCurrentUser(currentUserRes.data);
+                    setAlluser([]); // Jobseekers don't need to see other users
 
+                } else if (userType === 'employer') {
+                    console.log("User type from localStorage:", userType)
+                    // CORRECTED: Fetch ALL jobseekers using the jobseekers endpoint
+                    const allJobseekersRes = await api.get("/jobseekers/");
+                    console.log("All jobseekers response:", allJobseekersRes.data);
 
+                    // Handle the response properly
+                    if (Array.isArray(allJobseekersRes.data)) {
+                        setAlluser(allJobseekersRes.data);
+                    } else if (allJobseekersRes.data && allJobseekersRes.data.results) {
+                        // If paginated
+                        setAlluser(allJobseekersRes.data.results);
+                    } else {
+                        setAlluser([]);
+                    }
+
+                    // Fetch employer profile
+                    const employerRes = await api.get("/profile/employer/");
+                    setCurrentUser(employerRes.data);
+                }
 
 
                 // backend applied objects

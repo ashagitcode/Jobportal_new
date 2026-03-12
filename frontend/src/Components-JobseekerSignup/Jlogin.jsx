@@ -64,7 +64,9 @@ export const Jlogin = () => {
       // ✅ save tokens
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
-
+      localStorage.setItem("user_type", res.data.user.user_type);
+      console.log("usertype:",res.data.user.user_type)
+      
       // ✅ redirect to profile
       navigate("/Job-portal/jobseeker/");
 

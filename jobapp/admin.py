@@ -231,3 +231,37 @@ class CompanyVerificationAdmin(admin.ModelAdmin):
  
     list_display = ("legal_name","official_email","phone_number","status","created_at")
     list_filter = ("status",)
+
+
+
+
+
+
+
+
+
+
+from .models import JobSeekerProfile  # Add this import if not already present
+
+@admin.register(JobSeekerProfile)
+class JobSeekerProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'full_name', 'current_job_title', 'current_location', 'total_experience_years')
+    search_fields = ('user__email', 'full_name', 'phone')  # phone? Actually JobSeekerProfile has no direct phone field; it has alternate_phone, and user model has phone. We can use user__phone.
+    list_filter = ('gender', 'current_location')
+    readonly_fields = ('created_at', 'updated_at')
+    fieldsets = (
+        (None, {'fields': ('user', 'full_name', 'profile_photo')}),
+        ('Personal Info', {'fields': ('gender', 'dob', 'marital_status', 'nationality')}),
+        ('Contact Details', {'fields': ('alternate_phone', 'alternate_email', 'full_address', 'street', 'city', 'state', 'pincode', 'country')}),
+        ('Professional Details', {'fields': ('current_job_title', 'current_company', 'total_experience_years', 'notice_period', 'current_location', 'preferred_locations')}),
+        ('Resume & Portfolio', {'fields': ('resume_file', 'portfolio_link')}),
+        ('Career Preferences', {'fields': ('current_ctc', 'expected_ctc', 'preferred_job_type', 'preferred_role_industry', 'ready_to_start_immediately', 'willing_to_relocate')}),
+        ('Meta', {'fields': ('created_at', 'updated_at')}),
+    )
+    inlines = [
+        EducationInline,
+        ExperienceInline,
+        SkillInline,
+        LanguageInline,
+        CertificationInline
+    ]
