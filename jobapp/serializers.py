@@ -176,7 +176,9 @@ class EducationEntrySerializer(serializers.ModelSerializer):
         model = EducationEntry
         fields = '__all__'
         read_only_fields = ['id', 'profile']
- 
+
+
+
     def validate(self, data):
         level = data.get('qualification_level')
         errors = {}
@@ -215,6 +217,9 @@ class WorkExperienceEntrySerializer(serializers.ModelSerializer):
         model = WorkExperienceEntry
         fields = '__all__'
         read_only_fields = ['id', 'profile']
+
+
+
  
     def validate(self, data):
         errors = {}
@@ -299,7 +304,7 @@ class JobSeekerProfileReadSerializer(serializers.ModelSerializer):
  
  
 class JobSeekerProfileWriteSerializer(WritableNestedModelSerializer):
-    educations = EducationEntrySerializer(many=True, required=False)
+    
     experiences = WorkExperienceEntrySerializer(many=True, required=False)
     skills = SkillSerializer(many=True, required=False)
     languages = LanguageKnownSerializer(many=True, required=False)
@@ -317,13 +322,15 @@ class JobSeekerProfileWriteSerializer(WritableNestedModelSerializer):
         return data
  
     def update(self, instance, validated_data):
+                
         skills_data = validated_data.pop('skills', None)
         languages_data = validated_data.pop('languages', None)
         certifications_data = validated_data.pop('certifications', None)
  
         # First update normal profile fields + educations + experiences
-        instance = super().update(instance, validated_data)
- 
+        instance = super().update(instance, validated_data)# will comment out not neede
+
+
         # --------------------------
         # SKILLS (Replace Completely)
         # --------------------------

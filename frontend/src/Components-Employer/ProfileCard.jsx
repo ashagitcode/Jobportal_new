@@ -11,6 +11,10 @@ export const ProfileCard = ({ user, showActions = false }) => {
   console.log("user data:",user)
   if (!user) return null;
 
+  // Access profile data correctly
+  const profile=user;  // JobSeekerProfile object
+  const userData=user.user; // Nested user object
+
   const fullName = user.full_name || "Unknown";
   const initials = fullName
     .split(" ")
@@ -18,13 +22,13 @@ export const ProfileCard = ({ user, showActions = false }) => {
     .join("")
     .toUpperCase();
 
-  const jobTitle = user.current_job_title || "N/A";
-  const experience = user.experience_years || "0";
+  const jobTitle = profile.current_job_title || "N/A";
+  const experience = profile.experience_years || "0";
 
-  const email = user.email || "N/A";
-  const phone = user.phone || "N/A";
-  const city = user.city || "N/A";
-  const state = user.state || "N/A";
+  const email = userData.email || "N/A";
+  const phone = profile.phone || "N/A";
+  const city = profile.city || "N/A";
+  const state = profile.state || "N/A";
 
   return (
     <div className="FindTalent-profile-card-container">

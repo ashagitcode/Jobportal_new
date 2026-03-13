@@ -51,7 +51,7 @@ class JobSeekerProfile(models.Model):
     # Current / Professional Details (general fields only)
     current_job_title = models.CharField(max_length=200, blank=True)
     current_company = models.CharField(max_length=200, blank=True)
-    total_experience_years = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True)
+    total_experience_years = models.DecimalField(max_digits=4, decimal_places=1, null=True, blank=True,default=None)   #1 defaultfix
     notice_period = models.CharField(
         max_length=50,
         choices=(
@@ -80,13 +80,13 @@ class JobSeekerProfile(models.Model):
     portfolio_link = models.URLField(blank=True, null=True)
  
     # Career Preferences (FIXED DECIMALS)
-    total_experience_years = models.DecimalField(
-        max_digits=4,
-        decimal_places=1,
-        null=True,
-        blank=True,
-        default=None
-    )
+    # total_experience_years = models.DecimalField(
+    #     max_digits=4,
+    #     decimal_places=1,
+    #     null=True,
+    #     blank=True,
+    #     default=None
+    # )
  
     current_ctc = models.DecimalField(
         max_digits=12,

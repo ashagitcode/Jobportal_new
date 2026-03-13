@@ -374,7 +374,7 @@ const ResumeSection = ({ data, onChange, onReset, onNext, setResumeFile, resumeF
                 <small>Allowed formats: PDF, DOC, DOCX</small>
             </div>
 
-            {/* ✅ SHOW SELECTED FILE NAME */}
+            
             {resumeFile && (
                 <small style={{ color: "green", marginTop: "8px", display: "block" }}>
                     Selected file: {resumeFile.name}
@@ -867,21 +867,21 @@ const Preferences = ({ data, onChange, onReset, onSubmitFinal, saving }) => {
 
         const newErrors = {};
 
-        // ✅ Current CTC
+        //  Current CTC
         if (!data.currentCTC) {
             newErrors.currentCTC = "Required";
         } else if (!NumRegex.test(data.currentCTC)) {
             newErrors.currentCTC = "Salary in numbers only";
         }
 
-        // ✅ Expected CTC
+        //  Expected CTC
         if (!data.expectedCTC) {
             newErrors.expectedCTC = "Required";
         } else if (!NumRegex.test(data.expectedCTC)) {
             newErrors.expectedCTC = "Salary in numbers only";
         }
 
-        // ✅ Other validations
+        //  Other validations
         if (!data.jobType || data.jobType === 'Select') {
             newErrors.jobType = "Please select a job type";
         }
@@ -964,11 +964,12 @@ export const MyProfile = () => {
         try {
             const token = localStorage.getItem("access");
             if (!token) {
-                // Token లేకపోతే login page కి redirect
+                
                 window.location.href = "/login";
                 return;
             }
             const res = await api.get("profile/jobseeker/");
+            console.log("📥 Received Profile Data:", res.data); // Debug log
 
             setAllData(prev => ({
                 ...prev,
@@ -1105,9 +1106,9 @@ export const MyProfile = () => {
         } catch (err) {
             console.error("Failed to load profile", err);
             if (err.response?.status === 401) {
-                alert("మీ సెషన్ గడువు ముగిసింది. దయచేసి మళ్లీ లాగిన్ అవ్వండి.");
+                alert("your session time expired, please login again");
                 localStorage.clear();
-                window.location.href = "/login";
+                window.location.href = "/Job-portal/jobseeker/login";
             }
         }
     };
@@ -1442,6 +1443,8 @@ export const MyProfile = () => {
             })),
 
 
+
+
             // ---- SKILLS ----
             skills: allData.skills
                 .filter(skill => typeof skill === "string" && skill.trim() !== "")
@@ -1492,16 +1495,16 @@ export const MyProfile = () => {
                 window.location.href = "/login";
                 return;
             }
-            // 1️⃣ Create main FormData for JSON + files
+            // 1 Create main FormData for JSON + files
             const formData = new FormData();
 
-            // 2️⃣ Add JSON payload as a field
+            // 2 Add JSON payload as a field
             const payload = mapFrontendToBackendPayload();
-            // ప్రతి field ని formData లో వేర్వేరుగా వేయండి
+       
             Object.keys(payload).forEach(key => {
                 if (payload[key] !== null && payload[key] !== undefined) {
                     if (Array.isArray(payload[key])) {
-                        // Arrays కి JSON.stringify
+                        // Arrays  JSON.stringify
                         formData.append(key, JSON.stringify(payload[key]));
                     } else if (typeof payload[key] === 'object') {
                         formData.append(key, JSON.stringify(payload[key]));
@@ -1511,17 +1514,17 @@ export const MyProfile = () => {
                 }
             });
 
-            // 3️⃣ Add profile photo if exists
+            // 3 Add profile photo if exists
             if (profilePhoto instanceof File) {
                 formData.append("profile_photo", profilePhoto);
             }
 
-            // 4️⃣ Add resume file if exists
+            // 4 Add resume file if exists
             if (resumeFile instanceof File) {
                 formData.append("resume_file", resumeFile);
             }
 
-            // 5️⃣ Add certifications
+            // 5 Add certifications
             if (allData.certs.length > 0) {
                 allData.certs.forEach((cert, index) => {
                     formData.append(`certifications[${index}][name]`, cert.name);
@@ -1531,9 +1534,9 @@ export const MyProfile = () => {
                 });
             }
 
-            // 6️⃣ Send single request
+            // 6 Send single request
             const response = await api.patch("profile/jobseeker/", formData, {
-                headers: { "Content-Type": "multipart/form-data" } // Token interceptor handle చేస్తుంది
+                headers: { "Content-Type": "multipart/form-data" } // Token interceptor handle does
             });
 
             if (response.status === 200 || response.status === 201) {

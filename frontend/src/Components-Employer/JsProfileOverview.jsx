@@ -29,7 +29,7 @@ export const JsProfileOverview = () => {
       try {
         setLoading(true);
         // Try to fetch from API first
-        const response = await api.get(`/profile/jobseeker/${id}/`);
+        const response = await api.get("/profile/jobseeker/");
         setApiUser(response.data);
         setApiError(null);
       } catch (err) {
