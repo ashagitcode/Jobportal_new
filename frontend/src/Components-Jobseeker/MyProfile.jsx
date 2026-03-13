@@ -1497,6 +1497,7 @@ export const MyProfile = () => {
             }
             // 1 Create main FormData for JSON + files
             const formData = new FormData();
+            console.log("total data:",formData)
 
             // 2 Add JSON payload as a field
             const payload = mapFrontendToBackendPayload();
