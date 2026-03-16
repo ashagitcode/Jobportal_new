@@ -559,6 +559,8 @@ class Message(models.Model):
                 self.conversation.initiated_by = self.sender
                 self.conversation.save()
         super().save(*args, **kwargs)    
+
+    
  
  
 from django.db import models

@@ -727,6 +727,9 @@ class SendMessageView(APIView):
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
  
+
+
+
 class UnreadCountView(APIView):
    
     permission_classes = [IsAuthenticated]
@@ -824,7 +827,7 @@ class EmployerInitiateChatView(APIView):
                 {'error': 'jobseeker_id is required'},
                 status=status.HTTP_400_BAD_REQUEST
             )
-       
+   
         try:
             jobseeker = User.objects.get(id=jobseeker_id, user_type='jobseeker')
         except User.DoesNotExist:
@@ -838,7 +841,7 @@ class EmployerInitiateChatView(APIView):
             participants=request.user
         ).filter(
             participants=jobseeker
-        ).first()
+        ). distinct().first() #here i added distinct()
        
         if not conversation:
            
@@ -866,6 +869,11 @@ class EmployerInitiateChatView(APIView):
             'conversation_id': conversation.id
         })    
    
+
+
+        
+
+        
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import ChatMessage

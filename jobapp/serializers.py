@@ -840,11 +840,19 @@ class SendMessageSerializer(serializers.Serializer):
             content=content
         )
        
+
+
+       # If employer is sending the message, enable jobseeker to reply
+        if sender.user_type == 'employer':
+            conversation.jobseeker_can_reply = True
+            conversation.save()
        
         conversation.save()
        
         return message
    
+
+
 class ConversationSerializer(serializers.ModelSerializer):
     participants = ChatUserSerializer(many=True, read_only=True)
     last_message = serializers.SerializerMethodField()
@@ -882,6 +890,8 @@ class ConversationSerializer(serializers.ModelSerializer):
                 return "You can reply to this conversation"
             else:
                 return "Waiting for employer to respond"
+
+       
            
        
 from rest_framework import serializers

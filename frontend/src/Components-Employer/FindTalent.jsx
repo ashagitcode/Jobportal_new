@@ -3,9 +3,10 @@ import "./FindTalent.css";
 import { useJobs } from "../JobContext";
 import { useNavigate } from "react-router-dom";
 import { ProfileCard } from "./ProfileCard";
+import api from "../api/axios";
 
 export const FindTalent = () => {
-  const { Alluser } = useJobs();
+  const { Alluser, startConversation } = useJobs();
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -109,6 +110,15 @@ export const FindTalent = () => {
     showAll ? items : items.slice(0, 3);
 
   /* ---------------- UI ---------------- */
+
+
+  // Add this before the return to see the data structure
+console.log("Alluser sample:", Alluser?.map(u => ({
+  profileId: u.id,
+  userId: u.user?.id,
+  user_id: u.user_id,
+  name: u.full_name
+})));
 
   return (
     <div className="talent-page-container">
@@ -272,7 +282,14 @@ export const FindTalent = () => {
 
         <div className="FindTalent-talent-list">
           {filteredTalent?.map((user, index) => (
-            <ProfileCard key={index} user={user} showActions={true} />
+            // <ProfileCard key={index} user={user} showActions={true} onChat={()=>startConversation(user.id)} />
+            // CORRECT code:
+            <ProfileCard
+              key={index}
+              user={user}
+              showActions={true}
+              onChat={() => startConversation(user.user?.id || user.user_id)}  // ← FIX: send actual user ID
+            />
           ))}
 
           {filteredTalent?.length > 0 && (

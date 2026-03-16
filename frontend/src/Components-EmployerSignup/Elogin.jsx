@@ -1,3 +1,172 @@
+// import React, { useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import api from "../api/axios";
+// import manSitting from "../assets/Illustration_1.png";
+// import eye from "../assets/show_password.png";
+// import eyeHide from "../assets/eye-hide.png";
+// import "./Elogin.css";
+
+// export const Elogin = () => {
+//   const navigate = useNavigate(); // ✅ FIX 1
+
+//   const [passwordShow, setPasswordShow] = useState(true);
+//   const [loading, setLoading] = useState(false);
+//   const [errors, setErrors] = useState({});
+
+//   const [formValues, setFormValues] = useState({
+//     username: "",
+//     password: "",
+//   });
+
+//   const togglePasswordView = () => {
+//     setPasswordShow((prev) => !prev);
+//   };
+
+//   const handleForm = (e) => {
+//     const { name, value } = e.target;
+//     setFormValues({ ...formValues, [name]: value });
+//     setErrors({ ...errors, [name]: "" });
+//   };
+
+//   const validateForm = () => {
+//     const newErrors = {};
+
+//     if (!formValues.username.trim()) {
+//       newErrors.username = "Username is required";
+//     }
+
+//     if (!formValues.password.trim()) {
+//       newErrors.password = "Password is required";
+//     }
+
+//     setErrors(newErrors);
+//     return Object.keys(newErrors).length === 0;
+//   };
+
+//   // ✅ FIX 2 – correct submit handler
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!validateForm()) return;
+
+//     setLoading(true);
+
+//     try {
+//       const res = await api.post("/login/", {
+//         email: formValues.username,
+//         password: formValues.password,
+//       });
+
+// // ✅ Save tokens
+// localStorage.setItem("access", res.data.access);
+// localStorage.setItem("refresh", res.data.refresh);
+// localStorage.setItem("user_type", res.data.user.user_type);
+// console.log("usertype:",res.data.user.user_type);
+
+// // ✅ Redirect after login
+// navigate("/Job-portal/employer/dashboard");
+//     } catch (err) {
+//   setErrors({
+//     general: "Invalid email or password",
+//   });
+// } finally {
+//   setLoading(false);
+// }
+//   };
+
+// return (
+//   <div className="login-page">
+//     <header className="login-header">
+//       <Link to="/Job-portal" className="logo">
+//         <span className="logo-text">job portal</span>
+//         <span className="subtext">for Employers</span>
+//       </Link>
+//       <div className="header-links">
+//         <span className="no-account">Don’t have an account?</span>
+//         <Link to="/Job-portal/employer/signup" className="signup-btn">
+//           Create
+//         </Link>
+//         <div className="separator"></div>
+//         <Link
+//           to="/Job-portal/jobseeker/login"
+//           className="employer-redirect-link"
+//         >
+//           Job seekers Login
+//         </Link>
+//       </div>
+//     </header>
+
+//     <div className="login-body">
+//       <div className="login-illustration">
+//         <img src={manSitting} alt="Login Illustration" />
+//       </div>
+
+//       {/* ✅ FIX 3 – use onSubmit, NOT action */}
+//       <form onSubmit={handleSubmit} className="login-form">
+//         <h2>Login to continue</h2>
+
+//         {errors.general && (
+//           <span className="error-msg">{errors.general}</span>
+//         )}
+
+//         <label>Email ID</label>
+//         <input
+//           type="email"
+//           name="username"
+//           placeholder="Enter your email address"
+//           value={formValues.username}
+//           onChange={handleForm}
+//           className={errors.username ? "input-error" : ""}
+//         />
+//         {errors.username && (
+//           <span className="error-msg">{errors.username}</span>
+//         )}
+
+//         <label>Password</label>
+//         <div className="password-wrapper">
+//           <input
+//             type={passwordShow ? "password" : "text"}
+//             name="password"
+//             placeholder="Enter your password"
+//             value={formValues.password}
+//             onChange={handleForm}
+//             className={errors.password ? "input-error" : ""}
+//           />
+//           <span className="eye-icon" onClick={togglePasswordView}>
+//             <img
+//               src={passwordShow ? eye : eyeHide}
+//               className="show-icon"
+//               alt="toggle"
+//             />
+//           </span>
+//         </div>
+//         {errors.password && (
+//           <span className="error-msg">{errors.password}</span>
+//         )}
+
+//         <div className="form-options">
+//           <label>
+//             <input type="checkbox" /> Remember me
+//           </label>
+//           <Link
+//             to="/Job-portal/employer/login/forgotpassword"
+//             className="forgot-password"
+//           >
+//             Forgot Password?
+//           </Link>
+//         </div>
+
+//         <button type="submit" className="j-login-btn" disabled={loading}>
+//           {loading ? "Logging in..." : "Login"}
+//         </button>
+//       </form>
+//     </div>
+//   </div>
+// );
+// };
+
+
+
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
@@ -7,7 +176,7 @@ import eyeHide from "../assets/eye-hide.png";
 import "./Elogin.css";
 
 export const Elogin = () => {
-  const navigate = useNavigate(); // ✅ FIX 1
+  const navigate = useNavigate();
 
   const [passwordShow, setPasswordShow] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -43,7 +212,6 @@ export const Elogin = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ FIX 2 – correct submit handler
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,110 +225,134 @@ export const Elogin = () => {
         password: formValues.password,
       });
 
-// ✅ Save tokens
-localStorage.setItem("access", res.data.access);
-localStorage.setItem("refresh", res.data.refresh);
-localStorage.setItem("user_type", res.data.user.user_type);
-console.log("usertype:",res.data.user.user_type);
+      console.log("✅ Login response:", res.data); // Debug: see what data comes back
 
-// ✅ Redirect after login
-navigate("/Job-portal/employer/dashboard");
+      // ✅ Save ALL necessary data to localStorage
+      localStorage.setItem("access", res.data.access);
+      localStorage.setItem("refresh", res.data.refresh);
+      
+      // ✅ IMPORTANT: Save user_id (this was missing!)
+      // Check where user_id is in the response
+      if (res.data.user_id) {
+        localStorage.setItem("user_id", res.data.user_id);
+      } else if (res.data.user && res.data.user.id) {
+        localStorage.setItem("user_id", res.data.user.id);
+      } else if (res.data.id) {
+        localStorage.setItem("user_id", res.data.id);
+      }
+      
+      // Save user type
+      localStorage.setItem("user_type", res.data.user.user_type);
+      
+      // Optional: Save profile_id if available
+      if (res.data.profile_id) {
+        localStorage.setItem("profile_id", res.data.profile_id);
+      }
+
+      console.log("✅ Saved to localStorage:", {
+        user_id: localStorage.getItem("user_id"),
+        user_type: localStorage.getItem("user_type"),
+        access: localStorage.getItem("access") ? "present" : "missing"
+      });
+
+      // ✅ Redirect after login
+      navigate("/Job-portal/employer/dashboard");
     } catch (err) {
-  setErrors({
-    general: "Invalid email or password",
-  });
-} finally {
-  setLoading(false);
-}
+      console.error("Login error:", err);
+      setErrors({
+        general: "Invalid email or password",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-return (
-  <div className="login-page">
-    <header className="login-header">
-      <Link to="/Job-portal" className="logo">
-        <span className="logo-text">job portal</span>
-        <span className="subtext">for Employers</span>
-      </Link>
-      <div className="header-links">
-        <span className="no-account">Don’t have an account?</span>
-        <Link to="/Job-portal/employer/signup" className="signup-btn">
-          Create
+  return (
+    <div className="login-page">
+      <header className="login-header">
+        <Link to="/Job-portal" className="logo">
+          <span className="logo-text">job portal</span>
+          <span className="subtext">for Employers</span>
         </Link>
-        <div className="separator"></div>
-        <Link
-          to="/Job-portal/jobseeker/login"
-          className="employer-redirect-link"
-        >
-          Job seekers Login
-        </Link>
-      </div>
-    </header>
-
-    <div className="login-body">
-      <div className="login-illustration">
-        <img src={manSitting} alt="Login Illustration" />
-      </div>
-
-      {/* ✅ FIX 3 – use onSubmit, NOT action */}
-      <form onSubmit={handleSubmit} className="login-form">
-        <h2>Login to continue</h2>
-
-        {errors.general && (
-          <span className="error-msg">{errors.general}</span>
-        )}
-
-        <label>Email ID</label>
-        <input
-          type="email"
-          name="username"
-          placeholder="Enter your email address"
-          value={formValues.username}
-          onChange={handleForm}
-          className={errors.username ? "input-error" : ""}
-        />
-        {errors.username && (
-          <span className="error-msg">{errors.username}</span>
-        )}
-
-        <label>Password</label>
-        <div className="password-wrapper">
-          <input
-            type={passwordShow ? "password" : "text"}
-            name="password"
-            placeholder="Enter your password"
-            value={formValues.password}
-            onChange={handleForm}
-            className={errors.password ? "input-error" : ""}
-          />
-          <span className="eye-icon" onClick={togglePasswordView}>
-            <img
-              src={passwordShow ? eye : eyeHide}
-              className="show-icon"
-              alt="toggle"
-            />
-          </span>
-        </div>
-        {errors.password && (
-          <span className="error-msg">{errors.password}</span>
-        )}
-
-        <div className="form-options">
-          <label>
-            <input type="checkbox" /> Remember me
-          </label>
+        <div className="header-links">
+          <span className="no-account">Don’t have an account?</span>
+          <Link to="/Job-portal/employer/signup" className="signup-btn">
+            Create
+          </Link>
+          <div className="separator"></div>
           <Link
-            to="/Job-portal/employer/login/forgotpassword"
-            className="forgot-password"
+            to="/Job-portal/jobseeker/login"
+            className="employer-redirect-link"
           >
-            Forgot Password?
+            Job seekers Login
           </Link>
         </div>
+      </header>
 
-        <button type="submit" className="j-login-btn" disabled={loading}>
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+      <div className="login-body">
+        <div className="login-illustration">
+          <img src={manSitting} alt="Login Illustration" />
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          <h2>Login to continue</h2>
+
+          {errors.general && (
+            <span className="error-msg">{errors.general}</span>
+          )}
+
+          <label>Email ID</label>
+          <input
+            type="email"
+            name="username"
+            placeholder="Enter your email address"
+            value={formValues.username}
+            onChange={handleForm}
+            className={errors.username ? "input-error" : ""}
+          />
+          {errors.username && (
+            <span className="error-msg">{errors.username}</span>
+          )}
+
+          <label>Password</label>
+          <div className="password-wrapper">
+            <input
+              type={passwordShow ? "password" : "text"}
+              name="password"
+              placeholder="Enter your password"
+              value={formValues.password}
+              onChange={handleForm}
+              className={errors.password ? "input-error" : ""}
+            />
+            <span className="eye-icon" onClick={togglePasswordView}>
+              <img
+                src={passwordShow ? eye : eyeHide}
+                className="show-icon"
+                alt="toggle"
+              />
+            </span>
+          </div>
+          {errors.password && (
+            <span className="error-msg">{errors.password}</span>
+          )}
+
+          <div className="form-options">
+            <label>
+              <input type="checkbox" /> Remember me
+            </label>
+            <Link
+              to="/Job-portal/employer/login/forgotpassword"
+              className="forgot-password"
+            >
+              Forgot Password?
+            </Link>
+          </div>
+
+          <button type="submit" className="j-login-btn" disabled={loading}>
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+      </div>
     </div>
-  </div>
-);
+  );
 };

@@ -374,7 +374,7 @@ const ResumeSection = ({ data, onChange, onReset, onNext, setResumeFile, resumeF
                 <small>Allowed formats: PDF, DOC, DOCX</small>
             </div>
 
-            
+
             {resumeFile && (
                 <small style={{ color: "green", marginTop: "8px", display: "block" }}>
                     Selected file: {resumeFile.name}
@@ -964,7 +964,7 @@ export const MyProfile = () => {
         try {
             const token = localStorage.getItem("access");
             if (!token) {
-                
+
                 window.location.href = "/login";
                 return;
             }
@@ -1446,11 +1446,18 @@ export const MyProfile = () => {
 
 
             // ---- SKILLS ----
+            // skills: allData.skills
+            //     .filter(skill => typeof skill === "string" && skill.trim() !== "")
+            //     .map(skill => ({
+            //         name: skill.trim()
+            //     })),
+
+
+
+            // TO THIS:
             skills: allData.skills
                 .filter(skill => typeof skill === "string" && skill.trim() !== "")
-                .map(skill => ({
-                    name: skill.trim()
-                })),
+                .map(skill => skill.trim()),  // ✅ Correct - array of strings
 
 
             // ---- LANGUAGES ----
@@ -1485,6 +1492,89 @@ export const MyProfile = () => {
     };
 
 
+    // const handleFinalSubmit = async () => {
+    //     if (saving) return;
+    //     setSaving(true);
+
+    //     try {
+    //         const token = localStorage.getItem("access");
+    //         if (!token) {
+    //             window.location.href = "/login";
+    //             return;
+    //         }
+    //         // 1 Create main FormData for JSON + files
+    //         const formData = new FormData();
+
+
+    //         // 2 Add JSON payload as a field
+    //         const payload = mapFrontendToBackendPayload();
+
+    //         Object.keys(payload).forEach(key => {
+    //             if (payload[key] !== null && payload[key] !== undefined) {
+    //                 if (Array.isArray(payload[key])) {
+    //                     // Arrays  JSON.stringify
+    //                     formData.append(key, JSON.stringify(payload[key]));
+    //                 } else if (typeof payload[key] === 'object') {
+    //                     formData.append(key, JSON.stringify(payload[key]));
+    //                 } else {
+    //                     formData.append(key, payload[key]);
+    //                 }
+    //             }
+    //         });
+
+    //         // 3 Add profile photo if exists
+    //         if (profilePhoto instanceof File) {
+    //             formData.append("profile_photo", profilePhoto);
+    //         }
+
+    //         // 4 Add resume file if exists
+    //         if (resumeFile instanceof File) {
+    //             formData.append("resume_file", resumeFile);
+    //         }
+
+    //         // 5 Add certifications
+    //         if (allData.certs.length > 0) {
+    //             allData.certs.forEach((cert, index) => {
+    //                 formData.append(`certifications[${index}][name]`, cert.name);
+    //                 if (cert.file instanceof File) {
+    //                     formData.append(`certifications[${index}][certificate_file]`, cert.file);
+    //                 }
+    //             });
+    //         }
+
+    //         // 6 Send single request
+    //         const response = await api.patch("profile/jobseeker/", formData, {
+    //             headers: { "Content-Type": "multipart/form-data" } // Token interceptor handle does
+    //         });
+    //         console.log("total data:",formData)
+
+    //         if (response.status === 200 || response.status === 201) {
+    //             alert("Profile saved successfully!");
+    //             await fetchProfile();
+    //             setActiveItem("Profile");
+    //             setOpenDropdown("Basic Details");
+
+    //         }
+
+    //     } catch (err) {
+    //         console.error("Profile save failed", err);
+
+    //         if (err.response?.status === 401) {
+    //             // Token refresh failed - interceptor already handles this
+    //             alert("Session expired. Please login again.");
+    //         } else if (err.response) {
+    //             console.log("Backend error:", err.response.data);
+    //             alert(JSON.stringify(err.response.data, null, 2));
+    //         } else {
+    //             alert("Failed to save profile. Try again.");
+    //         }
+    //     } finally {
+
+    //         setSaving(false);
+    //     }
+    // };
+
+
     const handleFinalSubmit = async () => {
         if (saving) return;
         setSaving(true);
@@ -1495,49 +1585,60 @@ export const MyProfile = () => {
                 window.location.href = "/login";
                 return;
             }
-            // 1 Create main FormData for JSON + files
-            const formData = new FormData();
-            console.log("total data:",formData)
 
-            // 2 Add JSON payload as a field
+            const formData = new FormData();
+
+            // Get the payload
             const payload = mapFrontendToBackendPayload();
-       
+
+            // Send ALL fields directly - NO 'data' wrapper
             Object.keys(payload).forEach(key => {
                 if (payload[key] !== null && payload[key] !== undefined) {
                     if (Array.isArray(payload[key])) {
-                        // Arrays  JSON.stringify
+                        // Send arrays as JSON strings - this is what your backend expects
                         formData.append(key, JSON.stringify(payload[key]));
-                    } else if (typeof payload[key] === 'object') {
+                        console.log(`📤 ${key}:`, JSON.stringify(payload[key]));
+                    } else if (typeof payload[key] === 'object' && !(payload[key] instanceof File)) {
                         formData.append(key, JSON.stringify(payload[key]));
                     } else {
                         formData.append(key, payload[key]);
+                        console.log(`📤 ${key}:`, payload[key]);
                     }
                 }
             });
 
-            // 3 Add profile photo if exists
+            // Add files separately - NEVER use indexed format for files
             if (profilePhoto instanceof File) {
                 formData.append("profile_photo", profilePhoto);
             }
 
-            // 4 Add resume file if exists
             if (resumeFile instanceof File) {
                 formData.append("resume_file", resumeFile);
             }
 
-            // 5 Add certifications
+            // IMPORTANT: Send certification files with simple names, NOT nested
             if (allData.certs.length > 0) {
                 allData.certs.forEach((cert, index) => {
-                    formData.append(`certifications[${index}][name]`, cert.name);
                     if (cert.file instanceof File) {
-                        formData.append(`certifications[${index}][certificate_file]`, cert.file);
+                        // Use simple field name, not nested
+                        formData.append(`certificate_${index}`, cert.file);
                     }
                 });
             }
 
-            // 6 Send single request
+            // Debug: Log what we're sending
+            console.log("📤 FINAL FORM DATA:");
+            for (let pair of formData.entries()) {
+                if (pair[1] instanceof File) {
+                    console.log(pair[0] + ': [File: ' + pair[1].name + ']');
+                } else {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
+            }
+
+            // Send request
             const response = await api.patch("profile/jobseeker/", formData, {
-                headers: { "Content-Type": "multipart/form-data" } // Token interceptor handle does
+                headers: { "Content-Type": "multipart/form-data" }
             });
 
             if (response.status === 200 || response.status === 201) {
@@ -1549,13 +1650,11 @@ export const MyProfile = () => {
 
         } catch (err) {
             console.error("Profile save failed", err);
-
             if (err.response?.status === 401) {
-                // Token refresh failed - interceptor already handles this
                 alert("Session expired. Please login again.");
             } else if (err.response) {
                 console.log("Backend error:", err.response.data);
-                alert(JSON.stringify(err.response.data, null, 2));
+                alert("Error: " + JSON.stringify(err.response.data, null, 2));
             } else {
                 alert("Failed to save profile. Try again.");
             }

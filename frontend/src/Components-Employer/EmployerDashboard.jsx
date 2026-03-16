@@ -225,7 +225,7 @@ export const EmployerDashboard = () => {
                                 <>
                                     <div className='Welcome-Note'>
                                         <div>
-                                            <h2>Hi {employer.name},</h2>
+                                            <h2>Hi {employerName},</h2>
                                             <p style={{ fontWeight: "600" }}>Here's, What's Going on... </p>
                                         </div>
                                         <button className='post-job-btn' onClick={handlePostaJobClick}>+ Post a Job</button>
